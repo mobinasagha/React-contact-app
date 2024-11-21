@@ -2,6 +2,7 @@ import { useState } from "react";
 import account from "./assets/account.svg";
 import trash from "./assets/trash.svg";
 const initialValue = {
+  id: 0,
   fistName: "",
   phoneNumber: "",
   email: "",
@@ -10,9 +11,15 @@ const initialValue = {
 export default function Contact() {
   const [formData, setFormData] = useState(initialValue);
   const [contact, setContact] = useState([]);
+
   const changeHandler = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const newId = +formData.id + 1;
+    setFormData((prev) => ({ ...prev, [name]: value, id: newId }));
+  };
+  const deleteHandler = (id) => {
+    const newList = contact.filter((item) => item.id !== id);
+    setContact(newList);
   };
   const submitHandler = (e) => {
     e.preventDefault();
@@ -28,7 +35,7 @@ export default function Contact() {
     setContact((prev) => [...prev, formData]);
     setFormData(initialValue);
   };
-  console.log(contact);
+  // console.log(contact);
 
   return (
     <section className="flex w-[980px] max-w-[980px] mx-auto gap-4 items-start h-full">
@@ -100,7 +107,7 @@ export default function Contact() {
         {contact.length > 0 &&
           contact.map((contact, index) => (
             <div
-              key={index}
+              key={contact.id}
               className="flex item-center justify-between gap-2 bg-blue-100 rounded-xl p-2"
             >
               <div className="flex w-full justify-between items-center">
@@ -113,7 +120,7 @@ export default function Contact() {
                 <p className="text-blue-800 w-1/4">{contact?.address}</p>
               </div>
 
-              <button>
+              <button onClick={() => deleteHandler(contact.id)}>
                 <img src={trash} className="w-6 h-6"></img>
               </button>
             </div>
